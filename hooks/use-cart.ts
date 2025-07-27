@@ -12,9 +12,8 @@ export interface CartItem {
   quantity: number
   image: string
   category: string
-  specifications?: Record<string, any>
+  specifications?: Record<string, any>;
 }
-
 
 // PLAN MIGRATION PANIER VERS BACKEND
 // 1. Remplacer la gestion locale (Zustand/localStorage) par des appels API
@@ -28,6 +27,7 @@ export interface CartItem {
 // 4. Ajouter gestion loading/error pour chaque action
 // 5. Supprimer la persistance locale une fois la connexion API opérationnelle
 
+export interface CartStore {
   items: CartItem[]
   loading: boolean
   error: string | null
