@@ -35,6 +35,7 @@ interface Product {
   isPopular?: boolean
   isNew?: boolean
   isBestSeller?: boolean
+  notes?: string
 }
 
 interface ProductSelectorProps {

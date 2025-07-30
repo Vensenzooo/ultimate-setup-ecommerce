@@ -47,6 +47,9 @@ interface ComparisonProduct {
   cons: string[]
   performanceScore?: number
   valueScore?: number
+  isPopular?: boolean
+  isNew?: boolean
+  isBestSeller?: boolean
   notes?: string
 }
 
