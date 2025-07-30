@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { AdminLayout } from "@/components/admin/admin-layout"
 import { DataTable } from "@/components/admin/data-table"
 import { Button } from "@/components/ui/button"
@@ -19,57 +19,20 @@ import {
 } from "@/components/ui/dialog"
 import { Switch } from "@/components/ui/switch"
 import { Plus, Users, UserCheck, UserX, Shield } from "lucide-react"
+import { apiClient } from "@/lib/api/client"
 
-const users = [
-  {
-    id: 1,
-    name: "Alice Martin",
-    email: "alice@example.com",
-    role: "Client",
-    status: "Actif",
-    orders: 12,
-    totalSpent: 2456.78,
-    lastLogin: "2025-01-19",
-    createdAt: "2024-06-15",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: 2,
-    name: "Bob Dupont",
-    email: "bob@example.com",
-    role: "Admin",
-    status: "Actif",
-    orders: 0,
-    totalSpent: 0,
-    lastLogin: "2025-01-20",
-    createdAt: "2024-01-10",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: 3,
-    name: "Claire Rousseau",
-    email: "claire@example.com",
-    role: "Client",
-    status: "Inactif",
-    orders: 8,
-    totalSpent: 1789.45,
-    lastLogin: "2025-01-18",
-    createdAt: "2024-08-22",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: 4,
-    name: "David Chen",
-    email: "david@example.com",
-    role: "Modérateur",
-    status: "Actif",
-    orders: 3,
-    totalSpent: 899.99,
-    lastLogin: "2025-01-19",
-    createdAt: "2024-11-05",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-]
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  orders: number;
+  totalSpent: number;
+  lastLogin: string;
+  createdAt: string;
+  avatar: string;
+}
 
 const permissions = [
   { id: "products.read", name: "Voir les produits", category: "Produits" },
@@ -135,7 +98,7 @@ const columns = [
 export default function UsersPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isPermissionsDialogOpen, setIsPermissionsDialogOpen] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<any>(null)
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
@@ -143,6 +106,17 @@ export default function UsersPage() {
     password: "",
   })
   const [userPermissions, setUserPermissions] = useState<string[]>([])
+  const [users, setUsers] = useState<User[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    setLoading(true)
+    apiClient.get<User[]>("users")
+      .then(setUsers)
+      .catch((err) => setError(err.message || "Erreur de chargement"))
+      .finally(() => setLoading(false))
+  }, [])
 
   const handleCreateUser = () => {
     console.log("Creating user:", newUser)
@@ -150,19 +124,19 @@ export default function UsersPage() {
     setNewUser({ name: "", email: "", role: "", password: "" })
   }
 
-  const handleEdit = (user: any) => {
+  const handleEdit = (user: User) => {
     console.log("Editing user:", user)
   }
 
-  const handleDelete = (user: any) => {
+  const handleDelete = (user: User) => {
     console.log("Deleting user:", user)
   }
 
-  const handleView = (user: any) => {
+  const handleView = (user: User) => {
     console.log("Viewing user:", user)
   }
 
-  const handleManagePermissions = (user: any) => {
+  const handleManagePermissions = (user: User) => {
     setSelectedUser(user)
     setIsPermissionsDialogOpen(true)
   }
@@ -328,14 +302,20 @@ export default function UsersPage() {
             <CardDescription>Gérez tous les utilisateurs de la plateforme</CardDescription>
           </CardHeader>
           <CardContent>
-            <DataTable
-              data={users}
-              columns={columns}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onView={handleView}
-              selectable
-            />
+            {loading ? (
+              <div>Chargement...</div>
+            ) : error ? (
+              <div className="text-red-500">{error}</div>
+            ) : (
+              <DataTable
+                data={users}
+                columns={columns}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onView={handleView}
+                selectable
+              />
+            )}
           </CardContent>
         </Card>
 

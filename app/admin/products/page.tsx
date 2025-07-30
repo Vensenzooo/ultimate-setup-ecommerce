@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { AdminLayout } from "@/components/admin/admin-layout"
 import { DataTable } from "@/components/admin/data-table"
 import { Button } from "@/components/ui/button"
@@ -21,57 +21,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Plus, Upload, Download, Package, AlertTriangle, TrendingUp } from "lucide-react"
 import Image from "next/image"
-
-const products = [
-  {
-    id: 1,
-    name: "Intel Core i9-14900K",
-    category: "CPU",
-    brand: "Intel",
-    price: 589.99,
-    stock: 15,
-    status: "Actif",
-    sales: 234,
-    image: "/placeholder.svg?height=50&width=50",
-    createdAt: "2024-01-15",
-  },
-  {
-    id: 2,
-    name: "NVIDIA RTX 4080 Super",
-    category: "GPU",
-    brand: "NVIDIA",
-    price: 999.99,
-    stock: 8,
-    status: "Stock Faible",
-    sales: 156,
-    image: "/placeholder.svg?height=50&width=50",
-    createdAt: "2024-01-10",
-  },
-  {
-    id: 3,
-    name: "AMD Ryzen 9 7950X",
-    category: "CPU",
-    brand: "AMD",
-    price: 549.99,
-    stock: 0,
-    status: "Rupture",
-    sales: 189,
-    image: "/placeholder.svg?height=50&width=50",
-    createdAt: "2024-01-08",
-  },
-  {
-    id: 4,
-    name: "Corsair Vengeance DDR5",
-    category: "RAM",
-    brand: "Corsair",
-    price: 189.99,
-    stock: 25,
-    status: "Actif",
-    sales: 89,
-    image: "/placeholder.svg?height=50&width=50",
-    createdAt: "2024-01-05",
-  },
-]
+import { apiClient } from "@/lib/api/client"
 
 const columns = [
   {
@@ -138,6 +88,18 @@ export default function ProductsPage() {
     stock: "",
     description: "",
   })
+
+  const [products, setProducts] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    setLoading(true)
+    apiClient.get<any[]>("products")
+      .then(setProducts)
+      .catch((err) => setError(err.message || "Erreur de chargement"))
+      .finally(() => setLoading(false))
+  }, [])
 
   const handleCreateProduct = () => {
     // Logic to create product
@@ -361,14 +323,20 @@ export default function ProductsPage() {
             <CardDescription>Gérez tous vos produits depuis cette interface</CardDescription>
           </CardHeader>
           <CardContent>
-            <DataTable
-              data={products}
-              columns={columns}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onView={handleView}
-              selectable
-            />
+            {loading ? (
+              <div>Chargement...</div>
+            ) : error ? (
+              <div className="text-red-500">{error}</div>
+            ) : (
+              <DataTable
+                data={products}
+                columns={columns}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onView={handleView}
+                selectable
+              />
+            )}
           </CardContent>
         </Card>
       </div>

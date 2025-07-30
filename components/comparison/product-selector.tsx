@@ -16,36 +16,23 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Plus, Search, Star, Zap, Award, TrendingUp } from "lucide-react"
 import Image from "next/image"
-
-interface Product {
-  id: number
-  name: string
-  category: string
-  brand: string
-  price: number
-  originalPrice?: number
-  rating: number
-  reviews: number
-  image: string
-  specs: Record<string, string | number>
-  pros: string[]
-  cons: string[]
-  performanceScore?: number
-  valueScore?: number
-  isPopular?: boolean
-  isNew?: boolean
-  isBestSeller?: boolean
-  notes?: string
-}
+import type { Product } from "@/lib/types/comparison"
 
 interface ProductSelectorProps {
   products: Product[]
   selectedProducts: Product[]
   onAddProduct: (product: Product) => void
   maxProducts: number
+  loading?: boolean
 }
 
-export function ProductSelector({ products, selectedProducts, onAddProduct, maxProducts }: ProductSelectorProps) {
+export function ProductSelector({ 
+  products, 
+  selectedProducts, 
+  onAddProduct, 
+  maxProducts,
+  loading = false 
+}: ProductSelectorProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [isDialogOpen, setIsDialogOpen] = useState(false)

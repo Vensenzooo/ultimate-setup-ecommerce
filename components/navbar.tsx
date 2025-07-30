@@ -5,7 +5,6 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +14,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {
   Search,
-  ShoppingCart,
   Heart,
   Bell,
   User,
@@ -24,17 +22,24 @@ import {
   Settings,
   LogOut,
   Package,
-  CreditCard,
-  HelpCircle,
-  Trash2,
-  Plus,
-  Minus,
+  UserPlus,
+  LogIn,
 } from "lucide-react"
-import { useCart } from "@/hooks/use-cart"
+import { useUser, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs"
+import { CartSidebar } from "@/components/cart-sidebar"
+import { FavoritesSidebar } from "@/components/favorites-sidebar"
+import { NotificationsSidebar } from "@/components/notifications-sidebar"
+import { GlobalSearch } from "@/components/global-search"
+import { useUserSync } from "@/hooks/use-user-sync"
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { items, removeItem, updateQuantity, getTotalItems, getTotalPrice, clearCart } = useCart()
+  const { isSignedIn, user } = useUser()
+  const { syncUser, isSyncing, isSynced, needsSync } = useUserSync()
+
+  const handleSyncUser = async () => {
+    await syncUser()
+  }
 
   const navigation = [
     {
@@ -76,11 +81,11 @@ export function Navbar() {
                 {item.children ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="font-medium">
+                      <Button variant="ghost" className="font-medium text-gray-700 hover:text-blue-600">
                         {item.name}
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-48">
+                    <DropdownMenuContent align="start" className="w-56">
                       {item.children.map((child) => (
                         <DropdownMenuItem key={child.name} asChild>
                           <Link href={child.href} className="w-full">
@@ -101,160 +106,70 @@ export function Navbar() {
 
           {/* Search Bar */}
           <div className="hidden lg:flex items-center flex-1 max-w-md mx-8">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input type="search" placeholder="Rechercher des composants..." className="pl-10 pr-4 w-full" />
-            </div>
+            <GlobalSearch />
           </div>
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
-            {/* Search Mobile */}
-            <Button variant="ghost" size="sm" className="lg:hidden">
-              <Search className="h-5 w-5" />
-            </Button>
-
             {/* Wishlist */}
-            <Button variant="ghost" size="sm" className="relative">
-              <Heart className="h-5 w-5" />
-              <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">3</Badge>
-            </Button>
+            <FavoritesSidebar />
 
             {/* Notifications */}
-            <Button variant="ghost" size="sm" className="relative">
-              <Bell className="h-5 w-5" />
-              <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs bg-red-500">
-                2
-              </Badge>
-            </Button>
+            <NotificationsSidebar />
 
             {/* Cart */}
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="relative">
-                  <ShoppingCart className="h-5 w-5" />
-                  {getTotalItems() > 0 && (
-                    <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
-                      {getTotalItems()}
-                    </Badge>
-                  )}
-                </Button>
-              </SheetTrigger>
-              <SheetContent className="w-full sm:max-w-lg">
-                <SheetHeader>
-                  <SheetTitle>Panier ({getTotalItems()} articles)</SheetTitle>
-                </SheetHeader>
-                <div className="mt-6 space-y-4">
-                  {items.length === 0 ? (
-                    <div className="text-center py-8">
-                      <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-500">Votre panier est vide</p>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="space-y-4 max-h-96 overflow-y-auto">
-                        {items.map((item) => (
-                          <div key={item.id} className="flex items-center space-x-4 p-4 border rounded-lg">
-                            <img
-                              src={item.image || "/placeholder.svg"}
-                              alt={item.name}
-                              className="w-16 h-16 object-cover rounded"
-                            />
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-medium truncate">{item.name}</h4>
-                              <p className="text-sm text-gray-500">{item.price}€</p>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))}
-                              >
-                                <Minus className="h-3 w-3" />
-                              </Button>
-                              <span className="w-8 text-center">{item.quantity}</span>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                              >
-                                <Plus className="h-3 w-3" />
-                              </Button>
-                              <Button variant="ghost" size="sm" onClick={() => removeItem(item.id)}>
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="border-t pt-4">
-                        <div className="flex justify-between items-center mb-4">
-                          <span className="font-semibold">Total:</span>
-                          <span className="font-bold text-lg">{getTotalPrice()}€</span>
-                        </div>
-                        <div className="space-y-2">
-                          <Button className="w-full" size="lg">
-                            Commander
-                          </Button>
-                          <Button variant="outline" className="w-full bg-transparent" onClick={clearCart}>
-                            Vider le panier
-                          </Button>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </SheetContent>
-            </Sheet>
+            <CartSidebar />
 
             {/* User Menu */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <User className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem asChild>
-                  <Link href="/profile">
-                    <User className="mr-2 h-4 w-4" />
-                    Mon profil
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/orders">
+            {isSignedIn ? (
+              <div className="flex items-center space-x-3">
+                {/* Indicateur de synchronisation avec bouton */}
+                {needsSync ? (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleSyncUser}
+                    disabled={isSyncing}
+                    className="text-orange-600 border-orange-300 hover:bg-orange-50"
+                  >
                     <Package className="mr-2 h-4 w-4" />
-                    Mes commandes
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/billing">
-                    <CreditCard className="mr-2 h-4 w-4" />
-                    Facturation
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/settings">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Paramètres
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/help">
-                    <HelpCircle className="mr-2 h-4 w-4" />
-                    Aide
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Déconnexion
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                    {isSyncing ? 'Synchronisation...' : 'Activer profil'}
+                  </Button>
+                ) : isSynced && (
+                  <Badge className="bg-green-100 text-green-800 border-green-300">
+                    <Package className="mr-1 h-3 w-3" />
+                    Profil actif
+                  </Badge>
+                )}
+                
+                {/* UserButton de Clerk avec photo de profil */}
+                <UserButton 
+                  afterSignOutUrl="/"
+                  appearance={{
+                    elements: {
+                      avatarBox: "h-8 w-8",
+                    }
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <SignInButton>
+                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                    <LogIn className="h-4 w-4" />
+                    <span className="hidden sm:inline">Connexion</span>
+                  </Button>
+                </SignInButton>
+                <SignUpButton>
+                  <Button size="sm" className="flex items-center gap-2">
+                    <UserPlus className="h-4 w-4" />
+                    <span className="hidden sm:inline">Inscription</span>
+                  </Button>
+                </SignUpButton>
+              </div>
+            )}
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu Button */}
             <Button variant="ghost" size="sm" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
@@ -264,6 +179,11 @@ export function Navbar() {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden border-t py-4">
+            {/* Mobile Search */}
+            <div className="px-3 mb-4">
+              <GlobalSearch />
+            </div>
+            
             <div className="space-y-2">
               {navigation.map((item) => (
                 <div key={item.name}>
@@ -290,6 +210,24 @@ export function Navbar() {
                   )}
                 </div>
               ))}
+              
+              {/* Mobile Auth Buttons for Guests */}
+              {!isSignedIn && (
+                <div className="mt-4 pt-4 border-t space-y-2">
+                  <SignInButton>
+                    <Button variant="ghost" className="w-full justify-start" onClick={() => setIsMenuOpen(false)}>
+                      <LogIn className="mr-2 h-4 w-4" />
+                      Connexion
+                    </Button>
+                  </SignInButton>
+                  <SignUpButton>
+                    <Button className="w-full justify-start" onClick={() => setIsMenuOpen(false)}>
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      Inscription
+                    </Button>
+                  </SignUpButton>
+                </div>
+              )}
             </div>
           </div>
         )}

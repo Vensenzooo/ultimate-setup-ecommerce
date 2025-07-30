@@ -92,3 +92,125 @@ Tests are not yet implemented. Do not expect unit/integration/E2E tests in the c
 
 ---
 For questions or unclear conventions, ask for clarification or review recent changes before proceeding.
+
+### Prompt pour l'Agent AI (Cursor) pour Compléter le Backend et le Frontend
+Aperçu de la Tâche
+Tu es chargé de compléter le backend et le frontend d'une application e-commerce Next.js pour la rendre entièrement fonctionnelle. L'application utilise TypeScript, Tailwind CSS et des composants modulaires. Le backend doit être développé avec XAMPP (MySQL et PHP), et l'authentification sera gérée via Clerk. Ton objectif est d'analyser le code existant, de compléter les composants backend et frontend nécessaires, de les intégrer, et de t'assurer que l'application est pleinement opérationnelle.
+Instructions Étape par Étape
+1. Analyse du Code Existant
+
+Examine la Structure du Projet :
+Explore les répertoires app/, components/, hooks/ et lib/.
+Identifie les flux existants : admin, client, guest, et catalog.
+
+
+Nettoyage :
+Repère et supprime tous les fichiers de données mock ou démo pour préparer l'intégration avec des données réelles.
+
+
+
+2. Configuration de la Base de Données
+
+Création de la Base de Données :
+Utilise XAMPP pour créer une base de données MySQL pour l'application.
+
+
+Génération du Schéma SQL :
+Analyse les composants et pages du frontend pour déterminer les tables nécessaires (par exemple : users, products, orders, etc.).
+Génère un schéma SQL pour ces tables et crée-les dans la base de données.
+
+
+Données de Test :
+Insère des données d'exemple dans les tables pour tester l'application.
+
+
+
+3. Développement de l'API Backend
+
+Configuration du Backend :
+Crée un backend séparé utilisant PHP avec XAMPP.
+
+
+Endpoints RESTful :
+Développe des endpoints API RESTful en PHP pour gérer les opérations CRUD (Create, Read, Update, Delete) pour les entités identifiées dans la base de données.
+
+
+Sécurisation avec Clerk :
+Puisque Clerk est utilisé pour l'authentification côté frontend, implémente un endpoint ou une logique pour vérifier les tokens d'authentification envoyés par le frontend dans les requêtes API.
+
+
+Bonnes Pratiques :
+Assure-toi que l'API est sécurisée et bien organisée.
+
+
+
+4. Intégration Backend-Frontend
+
+Variables d'Environnement :
+Configure les variables d'environnement dans .env.local pour stocker l'URL de l'API backend.
+
+
+Client API :
+Implémente un client API dans lib/api/client.ts pour effectuer des requêtes vers l'API backend PHP.
+
+
+Mise à Jour des Composants :
+Remplace les données mock dans les composants frontend par des appels à l'API réelle via le client API.
+Ajoute des états de chargement (loading states) et une gestion des erreurs là où nécessaire.
+
+
+
+5. Implémentation de l'Authentification avec Clerk
+
+Intégration Frontend :
+Intègre le SDK de Clerk dans le frontend Next.js pour gérer l'authentification des utilisateurs.
+Configure des pages ou modals pour la connexion (login) et l'inscription (register) en utilisant les composants de Clerk.
+
+
+Requêtes Authentifiées :
+Assure-toi que les requêtes authentifiées vers le backend incluent les tokens d'authentification dans les en-têtes (par exemple, Authorization: Bearer <token>).
+
+
+Vérification Backend :
+Côté backend, vérifie ces tokens en utilisant les méthodes de Clerk pour sécuriser les endpoints API.
+
+
+
+6. Test et Validation
+
+Tests Backend :
+Teste tous les endpoints API avec des outils comme curl ou Postman pour confirmer leur bon fonctionnement.
+
+
+Tests Frontend :
+Vérifie que le frontend interagit correctement avec le backend et affiche/manipule les données réelles.
+
+
+Flux d'Authentification :
+Teste le flux d'authentification pour t'assurer que les utilisateurs peuvent s'inscrire, se connecter et accéder aux fonctionnalités protégées.
+
+
+Optimisation :
+Recherche les éventuels problèmes de performance et optimise si nécessaire.
+Vérifie que la gestion des erreurs est bien implémentée dans toute l'application.
+
+
+
+Directives
+
+Standards de Code :
+Respecte strictement les conventions et standards de code décrits dans la section "Current Practices" (utilisation de TypeScript strict, conventions de nommage, etc.).
+
+
+TypeScript :
+Utilise un typage strict avec des interfaces explicites et évite any.
+
+
+Conventions de Nommage :
+Utilise kebab-case pour les fichiers/répertoires, PascalCase pour les composants, et camelCase pour les fonctions/propriétés.
+
+
+Clarifications :
+Si une partie de la tâche est floue, réfère-toi au code existant ou demande des éclaircissements.
+
+

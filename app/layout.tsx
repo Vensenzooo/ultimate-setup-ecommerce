@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import { ClerkProvider } from '@clerk/nextjs'
 import "./globals.css"
 import { Navbar } from "@/components/navbar"
 import { Toaster } from "sonner"
@@ -19,12 +20,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="fr">
-      <body className={inter.className}>
-        <Navbar />
-        <main>{children}</main>
-        <Toaster position="top-right" />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="fr">
+        <body className={inter.className}>
+          <Navbar />
+          <main>{children}</main>
+          <Toaster position="top-right" />
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }

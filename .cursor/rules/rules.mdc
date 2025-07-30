@@ -1,0 +1,222 @@
+---
+description:
+# Copilot Instructions for AI Coding Agents
+
+## Current Practices
+
+### Project Overview
+Modern Next.js e-commerce platform using TypeScript, Tailwind CSS, and modular components. Major flows: admin, client, guest, catalog.
+
+### Architecture & Structure
+- **App Routing:** All pages in `app/` (Next.js App Router v13+). Subfolders for flows: `admin/`, `client/`, `guest/`, `catalog/`.
+- **Components:** Shared/domain-specific in `components/` (see `components/admin/`, `components/comparison/`, `components/ui/`).
+- **Hooks:** Custom hooks in `hooks/` (e.g., `use-cart.ts`, `use-toast.ts`).
+- **Lib:** Utilities in `lib/utils.ts`.
+- **Styles:** Global styles in `styles/globals.css`, `app/globals.css`.
+- **Config:** Tailwind, PostCSS, Next.js configs in root.
+
+### Developer Workflows
+- Install dependencies: `pnpm install`
+- Run dev server: `pnpm dev`
+- Build for production: `pnpm build`
+- Preview build: `pnpm start`
+- Type checking: `pnpm type-check` (if available)
+- Linting: `pnpm lint` (if available)
+
+### Code Standards & Conventions
+- **TypeScript:** Strict typing, prefer `interface` for objects, explicit return types, avoid `any`.
+- **Component Structure:** Functional components only, props interface above component, default export for pages, named export for utilities/hooks.
+- **File Naming:** kebab-case for files/folders, PascalCase for components, camelCase for functions/props.
+- **Styling:** Tailwind-first, mobile-first, use variants via conditional classes.
+
+### Patterns & Examples
+- **UI Primitive Example:** See `components/ui/button.tsx` for API and variants.
+- **Admin Page Example:** See `app/admin/products/page.tsx`.
+- **Custom Hook Example:** See `hooks/use-cart.ts`.
+- **Loading State Example:** See `app/catalog/loading.tsx`.
+
+### Integration Points
+- Static assets: `public/`
+- External libraries: Next.js, React, Tailwind CSS, PostCSS, PNPM
+
+### Testing Status
+Tests are not yet implemented. Do not expect unit/integration/E2E tests in the current codebase.
+
+### Common Tasks
+- Add admin page: create folder in `app/admin/`, add `page.tsx` and optionally `loading.tsx`, use `components/admin/`.
+- Add UI primitive: add to `components/ui/`, export and document usage.
+- Add custom hook: add to `hooks/`, follow patterns in `use-cart.ts`.
+
+### Key Files & Directories
+- `app/` — Next.js App Router pages/layouts
+- `components/` — Shared/domain React components
+- `hooks/` — Custom React hooks
+- `lib/utils.ts` — Utility functions
+- `public/` — Static assets
+- `styles/` — Global styles
+- `tailwind.config.ts` — Tailwind config
+
+---
+
+## Migration & Backend Integration Tasks
+
+### Phase 1: Project Analysis & Cleanup
+- Analyze codebase structure, identify/remove mock/demo data
+- Implement API layer in `lib/api/` (see example structure below)
+
+### Phase 2: Backend Development (XAMPP)
+- Create MySQL schema (see SQL in docs/backend-schema.sql)
+- Build PHP REST API (see docs/backend-structure.md)
+
+### Phase 3: Frontend-Backend Integration
+- Configure `.env.local` for API connection
+- Implement API client in `lib/api/client.ts` (see example in docs/api-client-example.ts)
+- Replace mock data with real API calls in components
+
+### Phase 4: Testing & Validation
+- Test API endpoints with curl
+- Verify frontend features with real data
+
+### Execution Checklist
+- [ ] Project analysis report created
+- [ ] All mock data files removed
+- [ ] API layer implemented
+- [ ] Components updated with loading states
+- [ ] Database created and sample data inserted
+- [ ] Backend API CRUD endpoints tested
+- [ ] Environment variables configured
+- [ ] API client tested
+- [ ] Frontend connected to backend
+- [ ] Authentication flow working
+- [ ] Error handling implemented
+- [ ] Performance optimized
+
+---
+For questions or unclear conventions, ask for clarification or review recent changes before proceeding.
+
+
+
+
+globs:### Prompt pour l'Agent AI (Cursor) pour Compléter le Backend et le Frontend
+Aperçu de la Tâche
+Tu es chargé de compléter le backend et le frontend d'une application e-commerce Next.js pour la rendre entièrement fonctionnelle. L'application utilise TypeScript, Tailwind CSS et des composants modulaires. Le backend doit être développé avec XAMPP (MySQL et PHP), et l'authentification sera gérée via Clerk. Ton objectif est d'analyser le code existant, de compléter les composants backend et frontend nécessaires, de les intégrer, et de t'assurer que l'application est pleinement opérationnelle.
+Instructions Étape par Étape
+1. Analyse du Code Existant
+
+Examine la Structure du Projet :
+Explore les répertoires app/, components/, hooks/ et lib/.
+Identifie les flux existants : admin, client, guest, et catalog.
+
+
+Nettoyage :
+Repère et supprime tous les fichiers de données mock ou démo pour préparer l'intégration avec des données réelles.
+
+
+
+2. Configuration de la Base de Données
+
+Création de la Base de Données :
+Utilise XAMPP pour créer une base de données MySQL pour l'application.
+
+
+Génération du Schéma SQL :
+Analyse les composants et pages du frontend pour déterminer les tables nécessaires (par exemple : users, products, orders, etc.).
+Génère un schéma SQL pour ces tables et crée-les dans la base de données.
+
+
+Données de Test :
+Insère des données d'exemple dans les tables pour tester l'application.
+
+
+
+3. Développement de l'API Backend
+
+Configuration du Backend :
+Crée un backend séparé utilisant PHP avec XAMPP.
+
+
+Endpoints RESTful :
+Développe des endpoints API RESTful en PHP pour gérer les opérations CRUD (Create, Read, Update, Delete) pour les entités identifiées dans la base de données.
+
+
+Sécurisation avec Clerk :
+Puisque Clerk est utilisé pour l'authentification côté frontend, implémente un endpoint ou une logique pour vérifier les tokens d'authentification envoyés par le frontend dans les requêtes API.
+
+
+Bonnes Pratiques :
+Assure-toi que l'API est sécurisée et bien organisée.
+
+
+
+4. Intégration Backend-Frontend
+
+Variables d'Environnement :
+Configure les variables d'environnement dans .env.local pour stocker l'URL de l'API backend.
+
+
+Client API :
+Implémente un client API dans lib/api/client.ts pour effectuer des requêtes vers l'API backend PHP.
+
+
+Mise à Jour des Composants :
+Remplace les données mock dans les composants frontend par des appels à l'API réelle via le client API.
+Ajoute des états de chargement (loading states) et une gestion des erreurs là où nécessaire.
+
+
+
+5. Implémentation de l'Authentification avec Clerk
+
+Intégration Frontend :
+Intègre le SDK de Clerk dans le frontend Next.js pour gérer l'authentification des utilisateurs.
+Configure des pages ou modals pour la connexion (login) et l'inscription (register) en utilisant les composants de Clerk.
+
+
+Requêtes Authentifiées :
+Assure-toi que les requêtes authentifiées vers le backend incluent les tokens d'authentification dans les en-têtes (par exemple, Authorization: Bearer <token>).
+
+
+Vérification Backend :
+Côté backend, vérifie ces tokens en utilisant les méthodes de Clerk pour sécuriser les endpoints API.
+
+
+
+6. Test et Validation
+
+Tests Backend :
+Teste tous les endpoints API avec des outils comme curl ou Postman pour confirmer leur bon fonctionnement.
+
+
+Tests Frontend :
+Vérifie que le frontend interagit correctement avec le backend et affiche/manipule les données réelles.
+
+
+Flux d'Authentification :
+Teste le flux d'authentification pour t'assurer que les utilisateurs peuvent s'inscrire, se connecter et accéder aux fonctionnalités protégées.
+
+
+Optimisation :
+Recherche les éventuels problèmes de performance et optimise si nécessaire.
+Vérifie que la gestion des erreurs est bien implémentée dans toute l'application.
+
+
+
+Directives
+
+Standards de Code :
+Respecte strictement les conventions et standards de code décrits dans la section "Current Practices" (utilisation de TypeScript strict, conventions de nommage, etc.).
+
+
+TypeScript :
+Utilise un typage strict avec des interfaces explicites et évite any.
+
+
+Conventions de Nommage :
+Utilise kebab-case pour les fichiers/répertoires, PascalCase pour les composants, et camelCase pour les fonctions/propriétés.
+
+
+Clarifications :
+Si une partie de la tâche est floue, réfère-toi au code existant ou demande des éclaircissements.
+
+alwaysApply: true
+---
+tu dois juste verifie et completer ce qu'il manque il y on a des aspect que j ai deja fait .

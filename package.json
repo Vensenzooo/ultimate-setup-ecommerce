@@ -9,6 +9,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.27.1",
     "@emotion/is-prop-valid": "latest",
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-accordion": "1.2.2",
@@ -38,6 +39,8 @@
     "@radix-ui/react-toggle": "1.1.1",
     "@radix-ui/react-toggle-group": "1.1.1",
     "@radix-ui/react-tooltip": "1.1.6",
+    "@stripe/react-stripe-js": "^3.8.1",
+    "@stripe/stripe-js": "^7.7.0",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -58,19 +61,27 @@
     "react-resizable-panels": "^2.1.7",
     "recharts": "latest",
     "sonner": "latest",
+    "stripe": "^18.3.0",
+    "svix": "^1.69.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
-    "use-sync-external-store": "latest",
-    "vaul": "^0.9.6",
-    "zod": "^3.24.1",
-    "zustand": "latest"
+    "use-sync-external-store": "^1.5.0",
+    "vaul": "^1.1.1",
+    "zod": "^3.25.76",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
+    "@prisma/client": "^6.12.0",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "eslint": "^9.32.0",
+    "eslint-config-next": "15.4.4",
+    "mysql2": "^3.14.2",
     "postcss": "^8.5",
+    "prisma": "^6.12.0",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.20.3",
     "typescript": "^5"
   }
 }
